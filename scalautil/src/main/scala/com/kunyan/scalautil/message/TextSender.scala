@@ -1,5 +1,7 @@
 package com.kunyan.scalautil.message
 
+import java.net.URLEncoder
+
 import scala.io.Source
 
 /**
@@ -8,20 +10,19 @@ import scala.io.Source
 object TextSender {
 
   /**
-    * 发送短信,短信内容的格式为"${content}【${key}】"
-    * id,account,password向组长索取
+    * 发送短信
+    * key向组长索取
     *
-    * @param id id
-    * @param account 账号
-    * @param password 密码
-    * @param mobile 电话号码
-    * @param keyword "【】"中的内容
-    * @param content "【】"前的正文
+    * @param key 短信服务authKey
+    * @param content 短信内容
+    * @param phone 手机号码(超过一个用英文逗号分隔)
+    *
     */
-  def send(id: String, account: String, password: String, mobile: String, keyword: String, content: String): Unit = {
-    val newContent = String.format("【%s】%s", keyword, content)
-    val url = String.format("http://115.29.49.158:8888/sms.aspx?action=send&userid=%s&account=%s&password=%s&mobile=%s&content=%s", id, account, password, mobile, newContent)
-    Source.fromURL(url)
+  def send(key: String, content: String, phone: String): Boolean = {
+    val urlEncodeContent = URLEncoder.encode(content, "UTF-8")
+    val url = String.format("http://smsapi.c123.cn/OpenPlatform/OpenApi?action=sendOnce&ac=1001@501318590001&authkey=%s&cgid=52&csid=50131859&c=%s&m=%s", key, urlEncodeContent, phone)
+    val result = Source.fromURL(url).mkString
+    result.contains("result=\"1\"")
   }
 
 }
