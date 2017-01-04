@@ -1,3 +1,5 @@
 .idea
 scalautil/project/*
 scalautil/target/*
+summaryExtractor/project/*
+summaryExtractor/target/*
